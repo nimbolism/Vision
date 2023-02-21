@@ -1,0 +1,60 @@
+let div = document.createElement('div')
+let video = document.createElement('video')
+let canvas = document.createElement('canvas')
+let pic = document.createElement('img')
+let sharebtn = document.createElement('button')
+let stopbtn = document.createElement('button')
+let play = false;
+let sharing = "Stop sharing";
+let notSharing = "Share your screen";
+let width = 120;
+let height = width / (4 / 3);
+let interval = null
+
+window.onload = function () {
+    document.body.appendChild(div)
+    div.appendChild(canvas)
+    div.appendChild(video)
+    div.appendChild(pic)
+    div.appendChild(sharebtn)
+    div.appendChild(stopbtn)
+    video.setAttribute("width", width);
+    video.setAttribute("height", height);
+    pic.setAttribute("width", width);
+    pic.setAttribute("height", height);
+    canvas.style.display = "none"
+    sharebtn.innerHTML=notSharing
+    stopbtn.innerHTML=sharing
+    sharebtn.addEventListener("click", start)
+    stopbtn.addEventListener("click", stoping)
+}
+
+async function start() {
+    try {
+        video.srcObject = await navigator.mediaDevices.getDisplayMedia({ displaySurface: "window" });
+        video.play()
+        interval = setInterval(showpic, 1000)
+    } catch (err) {
+        console.error(`Error: ${err}`);
+    }
+}
+
+function stoping() {
+    let tracks = video.srcObject.getTracks();
+
+    tracks.forEach((track) => track.stop());
+    video.srcObject = null;
+    clearInterval(interval)
+}
+
+function showpic() {
+    const context = canvas.getContext("2d");
+    if (width && height) {
+        canvas.width = width;
+        canvas.height = height;
+        context.drawImage(video, 0, 0, width, height);
+
+        const data = canvas.toDataURL("image/png");
+        pic.setAttribute("src", data);
+    }
+} 
