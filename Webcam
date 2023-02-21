@@ -1,0 +1,42 @@
+let div = document.createElement('div')
+let pic = document.createElement('img')
+let canvas = document.createElement('canvas')
+let video = document.createElement('video');
+let width = 120
+let height = width / (4 / 3);
+
+window.onload= function(){
+    document.body.appendChild(div)
+    getvideo()
+}
+
+function getvideo() {
+    div.appendChild(canvas)
+    div.appendChild(video)
+    div.appendChild(pic)
+    video.setAttribute("width", width);
+    video.setAttribute("height", height);
+    pic.setAttribute("width", width);
+    pic.setAttribute("height", height);
+    canvas.style.display = "none"
+    navigator.mediaDevices.getUserMedia({video: true})
+        .then((stream) => {
+            video.srcObject = stream;
+            video.play();
+        });
+    setInterval(showpic, 1000) //taking pictures every 1 second
+
+    // google.colab.output.setIframeHeight(document.documentElement.scrollHeight, true);
+}
+
+function showpic() {
+    const context = canvas.getContext("2d");
+    if (width && height) {
+        canvas.width = width;
+        canvas.height = height;
+        context.drawImage(video, 0, 0, width, height);
+
+        const data = canvas.toDataURL("image/png");
+        pic.setAttribute("src", data);
+    }
+}
