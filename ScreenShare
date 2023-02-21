@@ -26,7 +26,7 @@ window.onload = function () {
     sharebtn.innerHTML=notSharing
     stopbtn.innerHTML=sharing
     sharebtn.addEventListener("click", start)
-    stopbtn.addEventListener("click", stoping)
+    stopbtn.addEventListener("click", stoping);
 }
 
 async function start() {
